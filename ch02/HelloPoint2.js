@@ -3,10 +3,11 @@
 let VSHADER_SOURCE =
     'attribute vec4 a_Position;\n' +
     'attribute vec3 a_VertexColor;\n' +
+    'attribute float a_PointSize;\n' +
     'varying vec3 v_Color;\n' +
     'void main() {\n' +
     '  gl_Position = a_Position;\n' + // Set the vertex coordinates of the point
-    '  gl_PointSize = 10.0;\n' +                    // Set the point size
+    '  gl_PointSize = a_PointSize;\n' +                    // Set the point size
     '  v_Color = a_VertexColor;\n' +                    // Set the point size
     '}\n';
 
@@ -54,6 +55,16 @@ function main() {
 
     // Pass vertex position to attribute variable
     gl.vertexAttrib3f(a_VertexColor, 0.0, 1.0, 0.0);
+
+    // Get the storage location of attribute variable, gl.shaderProgram comes from cuon-utils #17
+    let a_PointSize = gl.getAttribLocation(gl.shaderProgram, 'a_PointSize');
+    if (a_PointSize < 0) {
+        console.log('Failed to get the storage location of a_PointSize');
+        return;
+    }
+
+    // Pass vertex position to attribute variable
+    gl.vertexAttrib1f(a_PointSize, 20.0);
 
     // Specify the color for clearing <canvas>
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
